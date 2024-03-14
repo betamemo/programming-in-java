@@ -29,7 +29,7 @@ public class ActivityController {
     }
 
     @GetMapping("{userId}")
-    ResponseEntity<List<Activity>> getActivityByUserId(@PathVariable("id") Long userId) {
+    ResponseEntity<Activity> getActivityByUserId(@PathVariable("id") Long userId) {
         return ResponseEntity.ok(activityService.getActivityByUserId(userId));
     }
 
