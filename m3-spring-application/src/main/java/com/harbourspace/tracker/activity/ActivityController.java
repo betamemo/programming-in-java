@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/activity")
 public class ActivityController {
+
     private final ActivityService activityService;
 
     public ActivityController(ActivityService activityService) {
@@ -25,6 +26,16 @@ public class ActivityController {
     @GetMapping("{id}")
     ResponseEntity<Activity> getActivityById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(activityService.getActivityById(id));
+    }
+
+    @GetMapping("{userId}")
+    ResponseEntity<List<Activity>> getActivityByUserId(@PathVariable("id") Long userId) {
+        return ResponseEntity.ok(activityService.getActivityByUserId(userId));
+    }
+
+    @GetMapping("{/type/{type}")
+    ResponseEntity<Activity> getActivityByType(@PathVariable("type") String type) {
+        return ResponseEntity.ok(activityService.getActivityByType(type));
     }
 
     @PostMapping

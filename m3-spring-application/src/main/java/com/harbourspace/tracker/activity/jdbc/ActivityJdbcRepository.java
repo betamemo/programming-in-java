@@ -39,9 +39,20 @@ public class ActivityJdbcRepository {
                 .orElse(null);
     }
 
-    public Activity selectByName(String name) {
-        logger.debug("Selecting activity " + name);
-        return jdbcTemplate.query("SELECT * FROM activity WHERE name = ? LIMIT 1", this::rowMapper, name)
+    public List<Activity> selectByUserId(Long userId) {
+        logger.debug("Selecting activity " + userId);
+        return jdbcTemplate.query("SELECT * FROM activity", (resultSet, index) -> new Activity(
+                resultSet.getLong("id"),
+                resultSet.getLong("user_id"),
+                resultSet.getString("type"),
+                resultSet.getString("name"),
+                resultSet.getDouble("kcal_per_minute")
+        ));
+    }
+
+    public Activity selectByType(String type) {
+        logger.debug("Selecting activity " + type);
+        return jdbcTemplate.query("SELECT * FROM activity WHERE name = ? LIMIT 1", this::rowMapper, type)
                 .stream()
                 .findFirst()
                 .orElse(null);
