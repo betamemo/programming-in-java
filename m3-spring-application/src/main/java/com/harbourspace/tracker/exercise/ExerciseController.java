@@ -23,9 +23,9 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.getExercises());
     }
 
-    @GetMapping("{id}")
-    ResponseEntity<Exercise> getExerciseById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(exerciseService.getExerciseById(id));
+    @GetMapping("{userId}")
+    ResponseEntity<List<Exercise>> getExerciseById(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(exerciseService.getExerciseByUserId(userId));
     }
 
     @PostMapping

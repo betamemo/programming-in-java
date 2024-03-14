@@ -9,13 +9,17 @@ public interface ExerciseService {
 
     List<Exercise> getExercises();
 
-    Exercise getExerciseById(long id);
+    List<Exercise> getExerciseByUserId(long userId);
 
-    Exercise getExerciseByName(String name);
+    List<Exercise> getExerciseByDate();
+
+    List<Exercise> getExerciseByActivity(long activityId);
+
+    List<Exercise> getExerciseByDuration(long duration);
 
     Exercise createExercise(NewExercise exercise);
 
     Exercise updateExercise(Exercise exercise);
 
-    void deleteExercise(long id);
+    void deleteExercise(long userId);
 }
