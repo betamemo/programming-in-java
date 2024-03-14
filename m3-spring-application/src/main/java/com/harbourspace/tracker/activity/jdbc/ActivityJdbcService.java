@@ -7,9 +7,11 @@ import com.harbourspace.tracker.authorization.AuthorizationService;
 import com.harbourspace.tracker.error.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ActivityJdbcService implements ActivityService {
 
     private final Logger logger = LoggerFactory.getLogger(ActivityJdbcService.class);
