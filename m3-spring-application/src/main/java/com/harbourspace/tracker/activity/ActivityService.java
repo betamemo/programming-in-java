@@ -9,11 +9,7 @@ public interface ActivityService {
 
     List<Activity> getActivity();
 
-    Activity getActivityById(long id);
-
-    Activity getActivityByUserId(long userId);
-
-    Activity getActivityByType(String type);
+    List<Activity> getActivityByUserId(long userId);
 
     Activity createActivity(NewActivity activity);
 

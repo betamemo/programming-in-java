@@ -1,4 +1,4 @@
-package com.harbourspace.tracker.activity.jdbc;
+package com.harbourspace.tracker.activity.jpa;
 
 import com.harbourspace.tracker.activity.ActivityService;
 import com.harbourspace.tracker.activity.model.Activity;
@@ -7,19 +7,21 @@ import com.harbourspace.tracker.authorization.AuthorizationService;
 import com.harbourspace.tracker.error.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Primary
 @Service
-public class ActivityJdbcService implements ActivityService {
+public class ActivityJpaService implements ActivityService {
 
-    private final Logger logger = LoggerFactory.getLogger(ActivityJdbcService.class);
+    private final Logger logger = LoggerFactory.getLogger(ActivityJpaService.class);
 
-    private final ActivityJdbcRepository activityRepository;
+    private final ActivityJpaRepository activityRepository;
     private final AuthorizationService authorizationService;
 
-    public ActivityJdbcService(ActivityJdbcRepository activityRepository, AuthorizationService authorizationService) {
+    public ActivityJpaService(ActivityJpaRepository activityRepository, AuthorizationService authorizationService) {
         this.activityRepository = activityRepository;
         this.authorizationService = authorizationService;
     }
@@ -28,31 +30,15 @@ public class ActivityJdbcService implements ActivityService {
     public List<Activity> getActivity() {
         if (authorizationService.isSystem()) {
             logger.debug("Getting all activity");
-            return activityRepository.selectAll();
+            return activityRepository.findAll().stream().map(ActivityJpaService::toActivity).toList();
         } else throw unauthorized();
     }
 
     @Override
-    public Activity getActivityById(long id) {
+    public List<Activity> getActivityByUserId(long userId) {
         if (authorizationService.isSystem()) {
-            logger.debug("Getting activity " + id);
-            return activityRepository.selectById(id);
-        } else throw unauthorized();
-    }
-
-    @Override
-    public Activity getActivityByUserId(long userId) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting activity " + userId);
-            return activityRepository.selectByUserId(userId);
-        } else throw unauthorized();
-    }
-
-    @Override
-    public Activity getActivityByType(String type) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting activity " + type);
-            return activityRepository.selectByType(type);
+            logger.debug("Getting all activity of user: " + userId);
+            return activityRepository.findById(userId).stream().map(ActivityJpaService::toActivity).toList();
         } else throw unauthorized();
     }
 
@@ -60,16 +46,17 @@ public class ActivityJdbcService implements ActivityService {
     public Activity createActivity(NewActivity activity) {
         if (authorizationService.isSystem()) {
             logger.debug("Creating new activity: " + activity);
-            return activityRepository.insert(activity);
+            var entity = activityRepository.save(fromActivity(activity));
+            return toActivity(entity);
         } else throw unauthorized();
     }
-
 
     @Override
     public Activity updateActivity(Activity activity) {
         if (authorizationService.isSystem()) {
             logger.debug("Updating activity: " + activity);
-            return activityRepository.update(activity);
+            var entity = activityRepository.save(fromActivity(activity));
+            return toActivity(entity);
         } else throw unauthorized();
     }
 
@@ -77,7 +64,7 @@ public class ActivityJdbcService implements ActivityService {
     public void deleteActivity(long id) {
         if (authorizationService.isSystem()) {
             logger.debug("Deleting activity " + id);
-            activityRepository.delete(id);
+            activityRepository.delete(activityRepository.getReferenceById(id));
         } else throw unauthorized();
     }
 
@@ -85,5 +72,22 @@ public class ActivityJdbcService implements ActivityService {
         var authorizationException = new AuthorizationException("Activity is not authorized for this operation.");
         logger.error(authorizationException.getMessage());
         return authorizationException;
+    }
+
+    public static ActivityEntity fromActivity(Activity activity) {
+        ActivityEntity entity = new ActivityEntity();
+        entity.setId(activity.id());
+        entity.setName(activity.name());
+        return entity;
+    }
+
+    public static ActivityEntity fromActivity(NewActivity activity) {
+        ActivityEntity entity = new ActivityEntity();
+        entity.setName(activity.name());
+        return entity;
+    }
+
+    public static Activity toActivity(ActivityEntity entity) {
+        return new Activity(entity.getId(), entity.getUserId(), entity.getType(), entity.getName(), entity.getKcalPerMinute());
     }
 }
