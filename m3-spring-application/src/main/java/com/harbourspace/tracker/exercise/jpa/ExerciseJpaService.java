@@ -36,28 +36,39 @@ public class ExerciseJpaService implements ExerciseService {
     }
 
     @Override
+    public List<Exercise> getExerciseById(long id) {
+        if (authorizationService.isSystem()) {
+            logger.debug("Getting exercise id: " + id);
+            List<ExerciseEntity> entityList = exerciseRepository.findById(id);
+            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
+        } else throw unauthorized();
+    }
+
+    @Override
     public List<Exercise> getExerciseByUserId(long userId) {
         if (authorizationService.isSystem()) {
             logger.debug("Getting exercise of user: " + userId);
             List<ExerciseEntity> entityList = exerciseRepository.findByUserId(userId);
             return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
-
         } else throw unauthorized();
     }
 
     @Override
-    public List<Exercise> getExerciseByDate() {
-        return null;
-    }
-
-    @Override
     public List<Exercise> getExerciseByActivity(long activityId) {
-        return null;
+        if (authorizationService.isSystem()) {
+            logger.debug("Getting exercise of user: " + activityId);
+            List<ExerciseEntity> entityList = exerciseRepository.findByActivityId(activityId);
+            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
+        } else throw unauthorized();
     }
 
     @Override
     public List<Exercise> getExerciseByDuration(long duration) {
-        return null;
+        if (authorizationService.isSystem()) {
+            logger.debug("Getting exercise by duration: " + duration);
+            List<ExerciseEntity> entityList = exerciseRepository.findByDuration(duration);
+            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
+        } else throw unauthorized();
     }
 
     @Override

@@ -9,9 +9,9 @@ public interface ExerciseService {
 
     List<Exercise> getExercises();
 
-    List<Exercise> getExerciseByUserId(long userId);
+    List<Exercise> getExerciseById(long id);
 
-    List<Exercise> getExerciseByDate();
+    List<Exercise> getExerciseByUserId(long userId);
 
     List<Exercise> getExerciseByActivity(long activityId);
 
