@@ -23,19 +23,9 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getActivity());
     }
 
-    @GetMapping("{id}")
-    ResponseEntity<Activity> getActivityById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(activityService.getActivityById(id));
-    }
-
     @GetMapping("{userId}")
-    ResponseEntity<Activity> getActivityByUserId(@PathVariable("id") Long userId) {
+    ResponseEntity<List<Activity>> getActivityByUserId(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(activityService.getActivityByUserId(userId));
-    }
-
-    @GetMapping("{type}")
-    ResponseEntity<Activity> getActivityByType(@PathVariable("type") String type) {
-        return ResponseEntity.ok(activityService.getActivityByType(type));
     }
 
     @PostMapping
@@ -44,10 +34,7 @@ public class ActivityController {
     }
 
     @PutMapping("{id}")
-    ResponseEntity<Activity> updateActivity(
-            @PathVariable("id") Long id,
-            @RequestBody Activity activity
-    ) {
+    ResponseEntity<Activity> updateActivity(@PathVariable("id") Long id, @RequestBody Activity activity) {
         return ResponseEntity.ok(activityService.updateActivity(activity.copyWithId(id)));
     }
 
