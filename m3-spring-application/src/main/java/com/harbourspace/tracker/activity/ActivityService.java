@@ -9,6 +9,8 @@ public interface ActivityService {
 
     List<Activity> getActivity();
 
+    List<Activity> getActivityById(long id);
+
     List<Activity> getActivityByUserId(long userId);
 
     Activity createActivity(NewActivity activity);

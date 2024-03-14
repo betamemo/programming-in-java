@@ -35,9 +35,17 @@ public class ActivityJpaService implements ActivityService {
     }
 
     @Override
+    public List<Activity> getActivityById(long id) {
+        if (authorizationService.isSystem()) {
+            logger.debug("Getting activity id: " + id);
+            return activityRepository.findById(id).stream().map(ActivityJpaService::toActivity).toList();
+        } else throw unauthorized();
+    }
+
+    @Override
     public List<Activity> getActivityByUserId(long userId) {
         if (authorizationService.isSystem()) {
-            logger.debug("Getting all activity of user: " + userId);
+            logger.debug("Getting all activity of user id: " + userId);
             return activityRepository.findById(userId).stream().map(ActivityJpaService::toActivity).toList();
         } else throw unauthorized();
     }
