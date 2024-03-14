@@ -5,17 +5,13 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "activity")
 public class ActivityEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "userId")
     private Long userId;
-
     private String type;
     private String name;
-
-    @Column(name = "kcalPerMinute")
     private double kcalPerMinute;
 
     public Long getId() {
