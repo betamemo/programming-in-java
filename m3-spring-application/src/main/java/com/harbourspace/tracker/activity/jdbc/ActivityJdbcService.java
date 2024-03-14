@@ -41,7 +41,7 @@ public class ActivityJdbcService implements ActivityService {
     }
 
     @Override
-    public List<Activity> getActivityByUserId(long userId) {
+    public Activity getActivityByUserId(long userId) {
         if (authorizationService.isSystem()) {
             logger.debug("Getting activity " + userId);
             return activityRepository.selectByUserId(userId);

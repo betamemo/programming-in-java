@@ -11,7 +11,7 @@ public interface ActivityService {
 
     Activity getActivityById(long id);
 
-    List<Activity> getActivityByUserId(long userId);
+    Activity getActivityByUserId(long userId);
 
     Activity getActivityByType(String type);
 

@@ -41,16 +41,11 @@ public class ActivityJdbcRepository {
         ).stream().findFirst().orElse(null);
     }
 
-    public List<Activity> selectByUserId(Long userId) {
+    public Activity selectByUserId(Long userId) {
         logger.debug("Selecting activity " + userId);
-        return jdbcTemplate.query("SELECT * FROM activity WHERE user_id = ?",
-                new Object[]{userId}, (resultSet, index) -> new Activity(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("user_id"),
-                        resultSet.getString("type"),
-                        resultSet.getString("name"),
-                        resultSet.getDouble("kcal_per_minute")
-                ));
+        return jdbcTemplate.query("SELECT * FROM activity WHERE user_id = ? LIMIT 1",
+                this::rowMapper, userId
+        ).stream().findFirst().orElse(null);
     }
 
     public Activity selectByType(String type) {
