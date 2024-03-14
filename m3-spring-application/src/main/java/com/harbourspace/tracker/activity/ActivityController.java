@@ -33,7 +33,7 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getActivityByUserId(userId));
     }
 
-    @GetMapping("{/type/{type}")
+    @GetMapping("{type}")
     ResponseEntity<Activity> getActivityByType(@PathVariable("type") String type) {
         return ResponseEntity.ok(activityService.getActivityByType(type));
     }
