@@ -5,11 +5,13 @@ import com.harbourspace.tracker.exercise.model.NewExercise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class ExerciseJdbcRepository {
 
     private Logger logger = LoggerFactory.getLogger(ExerciseJdbcRepository.class);

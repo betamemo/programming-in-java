@@ -7,9 +7,11 @@ import com.harbourspace.tracker.exercise.model.Exercise;
 import com.harbourspace.tracker.exercise.model.NewExercise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ExerciseJdbcService implements ExerciseService {
 
     private final Logger logger = LoggerFactory.getLogger(ExerciseJdbcService.class);
