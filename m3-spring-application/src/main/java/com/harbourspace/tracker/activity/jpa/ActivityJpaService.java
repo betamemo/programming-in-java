@@ -5,12 +5,14 @@ import com.harbourspace.tracker.activity.model.Activity;
 import com.harbourspace.tracker.activity.model.NewActivity;
 import com.harbourspace.tracker.authorization.AuthorizationService;
 import com.harbourspace.tracker.error.AuthorizationException;
+import com.harbourspace.tracker.error.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Primary
 @Service
@@ -27,51 +29,46 @@ public class ActivityJpaService implements ActivityService {
     }
 
     @Override
-    public List<Activity> getActivity() {
+    public List<Activity> getActivityByUserId() {
+        long userId = authorizationService.getCurrentUser().id();
+        logger.debug("Getting all activity of user id: " + userId);
+        List<ActivityEntity> entities = activityRepository.findByUserId(userId);
+        return entities.stream().map(ActivityJpaService::toActivity).collect(Collectors.toList());
+    }
+
+    @Override
+    public Activity getActivityByActivityId(long id) {
+        logger.debug("Getting activity id: " + id);
         if (authorizationService.isSystem()) {
-            logger.debug("Getting all activity");
-            return activityRepository.findAll().stream().map(ActivityJpaService::toActivity).toList();
+            var entity = activityRepository.findById(id).orElseThrow(() ->
+                    new NotFoundException("Activity id: " + id + " not found")
+            );
+            return toActivity(entity);
         } else throw unauthorized();
     }
 
     @Override
-    public List<Activity> getActivityById(long id) {
+    public Activity createActivity(long userId, NewActivity activity) {
+        logger.debug("Creating new activity: " + activity);
         if (authorizationService.isSystem()) {
-            logger.debug("Getting activity id: " + id);
-            return activityRepository.findById(id).stream().map(ActivityJpaService::toActivity).toList();
-        } else throw unauthorized();
-    }
-
-    @Override
-    public List<Activity> getActivityByUserId(long userId) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting all activity of user id: " + userId);
-            return activityRepository.findById(userId).stream().map(ActivityJpaService::toActivity).toList();
-        } else throw unauthorized();
-    }
-
-    @Override
-    public Activity createActivity(NewActivity activity) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Creating new activity: " + activity);
             var entity = activityRepository.save(fromActivity(activity));
             return toActivity(entity);
         } else throw unauthorized();
     }
 
     @Override
-    public Activity updateActivity(Activity activity) {
+    public Activity updateActivity(long userId, Activity activity) {
+        logger.debug("Updating activity: " + activity);
         if (authorizationService.isSystem()) {
-            logger.debug("Updating activity: " + activity);
             var entity = activityRepository.save(fromActivity(activity));
             return toActivity(entity);
         } else throw unauthorized();
     }
 
     @Override
-    public void deleteActivity(long id) {
+    public void deleteActivity(long userId, long id) {
+        logger.debug("Deleting activity " + id);
         if (authorizationService.isSystem()) {
-            logger.debug("Deleting activity " + id);
             activityRepository.delete(activityRepository.getReferenceById(id));
         } else throw unauthorized();
     }
@@ -98,4 +95,5 @@ public class ActivityJpaService implements ActivityService {
     public static Activity toActivity(ActivityEntity entity) {
         return new Activity(entity.getId(), entity.getUserId(), entity.getType(), entity.getName(), entity.getKcalPerMinute());
     }
+
 }
