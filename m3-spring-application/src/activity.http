@@ -1,0 +1,3 @@
+### getActivityByActivityId
+http://localhost:8083/api/activity/1
+Authorization: Basic 0
