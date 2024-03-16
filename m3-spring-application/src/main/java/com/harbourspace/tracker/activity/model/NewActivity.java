@@ -1,7 +1,6 @@
 package com.harbourspace.tracker.activity.model;
 
 public record NewActivity(
-        Long id,
         Long userId,
         String type,
         String name,
