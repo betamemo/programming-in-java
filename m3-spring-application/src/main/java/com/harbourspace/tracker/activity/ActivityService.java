@@ -7,15 +7,14 @@ import java.util.List;
 
 public interface ActivityService {
 
-    List<Activity> getActivity();
+    List<Activity> getActivityByUserId();
 
-    List<Activity> getActivityById(long id);
+    Activity getActivityByActivityId(long id);
 
-    List<Activity> getActivityByUserId(long userId);
+    Activity createActivity(long userId, NewActivity activity);
 
-    Activity createActivity(NewActivity activity);
+    Activity updateActivity(long userId, Activity activity);
 
-    Activity updateActivity(Activity activity);
+    void deleteActivity(long userId, long id);
 
-    void deleteActivity(long id);
 }
