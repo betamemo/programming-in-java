@@ -7,5 +7,5 @@ insert into activity (user_id, name, kcal_per_minute) values (0, 'Running', 10.0
 insert into activity (user_id, name, kcal_per_minute) values (0, 'Cycling', 8.0);
 insert into activity (user_id, name, kcal_per_minute) values (0, 'Swimming', 7.0);
 insert into activity (user_id, name, kcal_per_minute) values (0, 'Weight Training', 3.0);
-
+insert into activity (user_id, name, kcal_per_minute) values (1, 'Walking', 6.0);
 insert into activity (user_id, name, kcal_per_minute) values (2, 'Swimming', 10.0);
