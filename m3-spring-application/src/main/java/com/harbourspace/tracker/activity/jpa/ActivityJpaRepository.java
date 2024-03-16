@@ -2,10 +2,11 @@ package com.harbourspace.tracker.activity.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface ActivityJpaRepository extends JpaRepository<ActivityEntity, Long> {
 
-    Optional<ActivityEntity> findByName(String name);
+    List<ActivityEntity> findByUserId(Long userId);
 
+    List<ActivityEntity> findByType(String type);
 }
