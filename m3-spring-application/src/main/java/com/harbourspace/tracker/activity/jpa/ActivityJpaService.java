@@ -50,7 +50,8 @@ public class ActivityJpaService implements ActivityService {
     @Override
     public Activity createActivity(NewActivity activity) {
         logger.debug("Creating new activity: " + activity);
-        var entity = activityRepository.save(fromActivity(activity));
+        long userId = authorizationService.getCurrentUser().id();
+        var entity = activityRepository.save(fromActivity(userId, activity));
         return toActivity(entity);
     }
 
@@ -84,9 +85,9 @@ public class ActivityJpaService implements ActivityService {
         return entity;
     }
 
-    public static ActivityEntity fromActivity(NewActivity activity) {
+    public static ActivityEntity fromActivity(long userId, NewActivity activity) {
         ActivityEntity entity = new ActivityEntity();
-        entity.setUserId(activity.userId());
+        entity.setUserId(userId);
         entity.setType("USER");
         entity.setName(activity.name());
         entity.setKcalPerMinute(activity.kcalPerMinute());
