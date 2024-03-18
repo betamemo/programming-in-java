@@ -86,7 +86,10 @@ public class ActivityJpaService implements ActivityService {
 
     public static ActivityEntity fromActivity(NewActivity activity) {
         ActivityEntity entity = new ActivityEntity();
+        entity.setUserId(activity.userId());
+        entity.setType("USER");
         entity.setName(activity.name());
+        entity.setKcalPerMinute(activity.kcalPerMinute());
         return entity;
     }
 
