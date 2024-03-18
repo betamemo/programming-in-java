@@ -11,7 +11,7 @@ public interface ActivityService {
 
     Activity getActivityById(long id);
 
-    Activity createActivity(long userId, NewActivity activity);
+    Activity createActivity(NewActivity activity);
 
     Activity updateActivity(long userId, Activity activity);
 

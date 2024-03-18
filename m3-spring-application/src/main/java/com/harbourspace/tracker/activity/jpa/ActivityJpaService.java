@@ -48,7 +48,7 @@ public class ActivityJpaService implements ActivityService {
     }
 
     @Override
-    public Activity createActivity(long userId, NewActivity activity) {
+    public Activity createActivity(NewActivity activity) {
         logger.debug("Creating new activity: " + activity);
         var entity = activityRepository.save(fromActivity(activity));
         return toActivity(entity);

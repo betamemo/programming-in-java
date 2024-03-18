@@ -28,9 +28,9 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getActivityById(id));
     }
 
-    @PostMapping("{userId}")
-    ResponseEntity<Activity> createActivity(@PathVariable("userId") Long userId, @RequestBody NewActivity activity) {
-        return new ResponseEntity<>(activityService.createActivity(userId, activity), HttpStatus.CREATED);
+    @PostMapping
+    ResponseEntity<Activity> createActivity(@RequestBody NewActivity activity) {
+        return new ResponseEntity<>(activityService.createActivity(activity), HttpStatus.CREATED);
     }
 
     @PutMapping("{userId}")
