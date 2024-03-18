@@ -37,7 +37,7 @@ public class ActivityJpaService implements ActivityService {
     }
 
     @Override
-    public Activity getActivityByActivityId(long id) {
+    public Activity getActivityById(long id) {
         logger.debug("Getting activity id: " + id);
         if (authorizationService.isSystem()) {
             var entity = activityRepository.findById(id).orElseThrow(() ->
@@ -50,10 +50,8 @@ public class ActivityJpaService implements ActivityService {
     @Override
     public Activity createActivity(long userId, NewActivity activity) {
         logger.debug("Creating new activity: " + activity);
-        if (authorizationService.isSystem()) {
-            var entity = activityRepository.save(fromActivity(activity));
-            return toActivity(entity);
-        } else throw unauthorized();
+        var entity = activityRepository.save(fromActivity(activity));
+        return toActivity(entity);
     }
 
     @Override

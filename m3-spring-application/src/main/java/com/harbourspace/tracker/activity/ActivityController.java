@@ -24,8 +24,8 @@ public class ActivityController {
     }
 
     @GetMapping("{id}")
-    ResponseEntity<Activity> getActivityByActivityId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(activityService.getActivityByActivityId(id));
+    ResponseEntity<Activity> getActivityById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(activityService.getActivityById(id));
     }
 
     @PostMapping("{userId}")
