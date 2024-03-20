@@ -58,11 +58,22 @@ public class ActivityJpaService implements ActivityService {
     @Override
     public Activity updateActivity(Activity activity) {
         logger.debug("Updating activity id: " + activity);
+
+        long id = activity.id();
+        var existActivity = activityRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Activity id: " + id + " not found")
+        );
+
         long currentUserId = authorizationService.getCurrentUser().id();
         long userId = activityRepository.getReferenceById(activity.id()).getUserId();
-
-        if (String.valueOf(currentUserId).equals(String.valueOf(userId))) {
-            var entity = activityRepository.save(fromActivity(activity));
+        if (currentUserId == userId) {
+            if (!(activity.name() == null)) {
+                existActivity.setName(activity.name());
+            }
+            if (!(activity.kcalPerMinute() == 0)) {
+                existActivity.setKcalPerMinute(activity.kcalPerMinute());
+            }
+            var entity = activityRepository.save(existActivity);
             return toActivity(entity);
         } else throw unauthorized();
     }
@@ -82,17 +93,6 @@ public class ActivityJpaService implements ActivityService {
         var authorizationException = new AuthorizationException("Activity is not authorized for this operation.");
         logger.error(authorizationException.getMessage());
         return authorizationException;
-    }
-
-    public static ActivityEntity fromActivity(Activity activity) {
-        ActivityEntity entity = new ActivityEntity();
-        if (activity.name() != null) {
-            entity.setName(activity.name());
-        }
-        if (activity.kcalPerMinute() != 0.0) {
-            entity.setKcalPerMinute(activity.kcalPerMinute());
-        }
-        return entity;
     }
 
     public static ActivityEntity fromActivity(long userId, NewActivity activity) {
