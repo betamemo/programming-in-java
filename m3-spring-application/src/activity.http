@@ -21,6 +21,10 @@ Authorization: Basic 2
   "kcalPerMinute": 30.0
 }
 
+### deleteActivity
+DELETE http://localhost:8083/api/activity/8
+Authorization: Basic 2
+
 ### json
 {
   "id": 8,
