@@ -56,18 +56,24 @@ public class ActivityJpaService implements ActivityService {
     }
 
     @Override
-    public Activity updateActivity(long userId, Activity activity) {
-        logger.debug("Updating activity: " + activity);
-        if (authorizationService.isSystem()) {
+    public Activity updateActivity(Activity activity) {
+        logger.debug("Updating activity id: " + activity);
+        long currentUserId = authorizationService.getCurrentUser().id();
+        long userId = activityRepository.getReferenceById(activity.id()).getUserId();
+
+        if (String.valueOf(currentUserId).equals(String.valueOf(userId))) {
             var entity = activityRepository.save(fromActivity(activity));
             return toActivity(entity);
         } else throw unauthorized();
     }
 
     @Override
-    public void deleteActivity(long userId, long id) {
-        logger.debug("Deleting activity " + id);
-        if (authorizationService.isSystem()) {
+    public void deleteActivity(long id) {
+        logger.debug("Deleting activity id: " + id);
+        long currentUserId = authorizationService.getCurrentUser().id();
+        long userId = activityRepository.getReferenceById(id).getUserId();
+
+        if (String.valueOf(currentUserId).equals(String.valueOf(userId))) {
             activityRepository.delete(activityRepository.getReferenceById(id));
         } else throw unauthorized();
     }
@@ -80,8 +86,12 @@ public class ActivityJpaService implements ActivityService {
 
     public static ActivityEntity fromActivity(Activity activity) {
         ActivityEntity entity = new ActivityEntity();
-        entity.setId(activity.id());
-        entity.setName(activity.name());
+        if (activity.name() != null) {
+            entity.setName(activity.name());
+        }
+        if (activity.kcalPerMinute() != 0.0) {
+            entity.setKcalPerMinute(activity.kcalPerMinute());
+        }
         return entity;
     }
 
