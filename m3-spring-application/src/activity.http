@@ -14,11 +14,18 @@ Authorization: Basic 2
   "kcalPerMinute": 20.0
 }
 
+### updateActivity
+PUT http://localhost:8083/api/activity/8
+Authorization: Basic 2
+{
+  "kcalPerMinute": 30.0
+}
+
 ### json
 {
-  "id": 6,
+  "id": 8,
   "userId": 2,
-  "type": null,
-  "name": "Weight Training",
-  "kcalPerMinute": 2.0
+  "type": "USER",
+  "name": "Dancing",
+  "kcalPerMinute": 30.0
 }
