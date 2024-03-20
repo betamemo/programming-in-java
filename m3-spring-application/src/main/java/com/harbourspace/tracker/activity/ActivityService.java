@@ -13,8 +13,8 @@ public interface ActivityService {
 
     Activity createActivity(NewActivity activity);
 
-    Activity updateActivity(long userId, Activity activity);
+    Activity updateActivity(Activity activity);
 
-    void deleteActivity(long userId, long id);
+    void deleteActivity(long id);
 
 }
