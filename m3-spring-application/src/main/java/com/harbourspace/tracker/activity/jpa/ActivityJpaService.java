@@ -84,7 +84,7 @@ public class ActivityJpaService implements ActivityService {
         long currentUserId = authorizationService.getCurrentUser().id();
         long userId = activityRepository.getReferenceById(id).getUserId();
 
-        if (String.valueOf(currentUserId).equals(String.valueOf(userId))) {
+        if (currentUserId == userId) {
             activityRepository.delete(activityRepository.getReferenceById(id));
         } else throw unauthorized();
     }
