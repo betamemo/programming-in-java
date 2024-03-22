@@ -57,7 +57,7 @@ public class ActivityJpaService implements ActivityService {
 
     @Override
     public Activity updateActivity(Activity activity) {
-        logger.debug("Updating activity id: " + activity);
+        logger.debug("Updating activity: " + activity);
 
         long id = activity.id();
         var existActivity = activityRepository.findById(id).orElseThrow(() ->
