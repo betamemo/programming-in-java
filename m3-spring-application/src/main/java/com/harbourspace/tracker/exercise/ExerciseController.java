@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/exercises")
+@RequestMapping("/api/exercise")
 public class ExerciseController {
 
     private final ExerciseService exerciseService;
@@ -18,14 +18,14 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @GetMapping
-    ResponseEntity<List<Exercise>> getExercises() {
-        return ResponseEntity.ok(exerciseService.getExercises());
+    @GetMapping()
+    ResponseEntity<List<Exercise>> getExerciseByUserId() {
+        return ResponseEntity.ok(exerciseService.getExerciseByUserId());
     }
 
-    @GetMapping("{userId}")
-    ResponseEntity<List<Exercise>> getExerciseById(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(exerciseService.getExerciseByUserId(userId));
+    @GetMapping("{id}")
+    ResponseEntity<Exercise> getExerciseById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(exerciseService.getExerciseById(id));
     }
 
     @PostMapping
@@ -34,10 +34,7 @@ public class ExerciseController {
     }
 
     @PutMapping("{id}")
-    ResponseEntity<Exercise> updateExercise(
-            @PathVariable("id") Long id,
-            @RequestBody Exercise exercise
-    ) {
+    ResponseEntity<Exercise> updateExercise(@PathVariable("id") Long id, @RequestBody Exercise exercise) {
         return ResponseEntity.ok(exerciseService.updateExercise(exercise.copyWithId(id)));
     }
 
