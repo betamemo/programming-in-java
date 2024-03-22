@@ -1,0 +1,26 @@
+### getExerciseById
+GET http://localhost:8083/api/exercise/7
+Authorization: Basic 2
+
+### getExerciseByUserId
+GET http://localhost:8083/api/exercise
+Authorization: Basic 2
+
+### createExercise
+POST http://localhost:8083/api/exercise
+Authorization: Basic 2
+{
+  "activityId": 7,
+  "duration": 90
+}
+
+### updateExercise
+PUT http://localhost:8083/api/exercise/7
+Authorization: Basic 2
+{
+  "duration": 120
+}
+
+### deleteExercise
+DELETE http://localhost:8083/api/exercise/7
+Authorization: Basic 2
