@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "exercises")
+@Table(name = "exercise")
 public class ExerciseEntity {
 
     @Id
