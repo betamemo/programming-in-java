@@ -1,15 +1,18 @@
 package com.harbourspace.tracker.exercise.jpa;
 
+import com.harbourspace.tracker.activity.jpa.ActivityEntity;
 import com.harbourspace.tracker.authorization.AuthorizationService;
 import com.harbourspace.tracker.error.AuthorizationException;
+import com.harbourspace.tracker.error.NotFoundException;
 import com.harbourspace.tracker.exercise.ExerciseService;
-import com.harbourspace.tracker.exercise.model.NewExercise;
 import com.harbourspace.tracker.exercise.model.Exercise;
+import com.harbourspace.tracker.exercise.model.NewExercise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,63 +31,47 @@ public class ExerciseJpaService implements ExerciseService {
     }
 
     @Override
-    public List<Exercise> getExercises() {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting all exercises");
-            return exerciseRepository.findAll().stream().map(ExerciseJpaService::toExercise).toList();
-        } else throw unauthorized();
+    public List<Exercise> getExerciseByUserId() {
+        long userId = authorizationService.getCurrentUser().id();
+        logger.debug("Getting all exercise of user id: " + userId);
+        List<ExerciseEntity> entities = exerciseRepository.findByUserId(userId);
+        return entities.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
     }
 
     @Override
-    public List<Exercise> getExerciseById(long id) {
+    public Exercise getExerciseById(long id) {
+        logger.debug("Getting exercise id: " + id);
         if (authorizationService.isSystem()) {
-            logger.debug("Getting exercise id: " + id);
-            List<ExerciseEntity> entityList = exerciseRepository.findById(id);
-            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
-        } else throw unauthorized();
-    }
-
-    @Override
-    public List<Exercise> getExerciseByUserId(long userId) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting exercise of user: " + userId);
-            List<ExerciseEntity> entityList = exerciseRepository.findByUserId(userId);
-            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
-        } else throw unauthorized();
-    }
-
-    @Override
-    public List<Exercise> getExerciseByActivity(long activityId) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting exercise of user: " + activityId);
-            List<ExerciseEntity> entityList = exerciseRepository.findByActivityId(activityId);
-            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
-        } else throw unauthorized();
-    }
-
-    @Override
-    public List<Exercise> getExerciseByDuration(long duration) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Getting exercise by duration: " + duration);
-            List<ExerciseEntity> entityList = exerciseRepository.findByDuration(duration);
-            return entityList.stream().map(ExerciseJpaService::toExercise).collect(Collectors.toList());
-        } else throw unauthorized();
-    }
-
-    @Override
-    public Exercise createExercise(NewExercise exercise) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Creating new exercise: " + exercise);
-            var entity = exerciseRepository.save(fromExercise(exercise));
+            var entity = exerciseRepository.findById(id).orElseThrow(() ->
+                    new NotFoundException("Exercise id: " + id + " not found")
+            );
             return toExercise(entity);
         } else throw unauthorized();
     }
 
     @Override
+    public Exercise createExercise(NewExercise exercise) {
+        logger.debug("Creating new exercise: " + exercise);
+        long userId = authorizationService.getCurrentUser().id();
+        var entity = exerciseRepository.save(fromExercise(userId, exercise));
+        return toExercise(entity);
+    }
+
+    @Override
     public Exercise updateExercise(Exercise exercise) {
-        if (authorizationService.isSystem()) {
-            logger.debug("Updating exercise: " + exercise);
-            var entity = exerciseRepository.save(fromExercise(exercise));
+        logger.debug("Updating exercise: " + exercise);
+
+        long id = exercise.id();
+        var existExercise = exerciseRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Exercise id: " + id + " not found")
+        );
+        long currentUserId = authorizationService.getCurrentUser().id();
+        long userId = exerciseRepository.getReferenceById(exercise.id()).getUserId();
+        if (currentUserId == userId) {
+            if (!(exercise.duration() == 0)) {
+                existExercise.setDuration(exercise.duration());
+            }
+            var entity = exerciseRepository.save(existExercise);
             return toExercise(entity);
         } else throw unauthorized();
     }
@@ -103,16 +90,13 @@ public class ExerciseJpaService implements ExerciseService {
         return authorizationException;
     }
 
-    public static ExerciseEntity fromExercise(Exercise exercise) {
+    public static ExerciseEntity fromExercise(long userId, NewExercise exercise) {
         ExerciseEntity entity = new ExerciseEntity();
-        entity.setId(exercise.id());
-        entity.setUserId(exercise.userId());
-        return entity;
-    }
-
-    public static ExerciseEntity fromExercise(NewExercise exercise) {
-        ExerciseEntity entity = new ExerciseEntity();
-        entity.setUserId(exercise.userId());
+        entity.setUserId(userId);
+        entity.setActivityId(exercise.activityId());
+        entity.setStartTime(new Timestamp(System.currentTimeMillis()));
+        entity.setDuration(exercise.duration());
+        entity.setKcalBurned(new ActivityEntity().getKcalPerMinute() * exercise.duration());
         return entity;
     }
 
