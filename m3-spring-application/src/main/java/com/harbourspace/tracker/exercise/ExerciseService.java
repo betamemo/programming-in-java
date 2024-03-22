@@ -7,19 +7,14 @@ import java.util.List;
 
 public interface ExerciseService {
 
-    List<Exercise> getExercises();
+    List<Exercise> getExerciseByUserId();
 
-    List<Exercise> getExerciseById(long id);
-
-    List<Exercise> getExerciseByUserId(long userId);
-
-    List<Exercise> getExerciseByActivity(long activityId);
-
-    List<Exercise> getExerciseByDuration(long duration);
+    Exercise getExerciseById(long id);
 
     Exercise createExercise(NewExercise exercise);
 
     Exercise updateExercise(Exercise exercise);
 
-    void deleteExercise(long userId);
+    void deleteExercise(long id);
+
 }
